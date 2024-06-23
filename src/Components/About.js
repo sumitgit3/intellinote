@@ -1,12 +1,9 @@
-import React, { useContext } from 'react'
-import noteContext from '../Context/Notes/noteContext';
+
 const About = () => {
-  const [count,setCount] = useContext(noteContext); 
+ 
   return (
     <div>
-      <h1>This is about</h1>
-      <h2>Count: {count}</h2>
-      <button onClick={() => setCount(count + 1)}>Increment Count</button>
+      This is about
     </div>
   )
 }
