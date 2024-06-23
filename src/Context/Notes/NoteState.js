@@ -1,91 +1,49 @@
 import React, { useState } from 'react'
 import noteContext from './noteContext'
 const NoteState = (props) => {
+  const host = "http://localhost:5000";
 
-  let intialNotes = [
-    {
-      "_id": "66756c7860007cdbc165dd2c0b2",
-      "user": "66745162c7d1cc400687f8a3",
-      "title": "My Second Note become first",
-      "description": "More Testing....",
-      "tag": "MYSecondNOTETOFIrst",
-      "date": "2024-06-21T12:03:12.609Z",
-      "__v": 0
-    }, {
-      "_id": "6675654675676c0007cdbc165dd2c0b2",
-      "user": "66745162c7d1cc400687f8a3",
-      "title": "My Second Note become first",
-      "description": "More Testing....",
-      "tag": "MYSecondNOTETOFIrst",
-      "date": "2024-06-21T12:03:12.609Z",
-      "__v": 0
-    }, {
-      "_id": "6675623423c0007cdbc165dd2c0b2",
-      "user": "66745162c7d1cc400687f8a3",
-      "title": "My Second Note become first",
-      "description": "More Testing....",
-      "tag": "MYSecondNOTETOFIrst",
-      "date": "2024-06-21T12:03:12.609Z",
-      "__v": 0
-    }, {
-      "_id": "66756654654c0007cdbc165dd2c0b2",
-      "user": "66745162c7d1cc400687f8a3",
-      "title": "My Second Note become first",
-      "description": "More Testing....",
-      "tag": "MYSecondNOTETOFIrst",
-      "date": "2024-06-21T12:03:12.609Z",
-      "__v": 0
-    }, {
-      "_id": "66756c0436007cdbc165dd2c0b2",
-      "user": "66745162c7d1cc400687f8a3",
-      "title": "My Second Note become first",
-      "description": "More Testing....",
-      "tag": "MYSecondNOTETOFIrst",
-      "date": "2024-06-21T12:03:12.609Z",
-      "__v": 0
-    }, {
-      "_id": "66756c00423534507cdbc165dd2c0b2",
-      "user": "66745162c7d1cc400687f8a3",
-      "title": "My Second Note become first",
-      "description": "More Testing....",
-      "tag": "MYSecondNOTETOFIrst",
-      "date": "2024-06-21T12:03:12.609Z",
-      "__v": 0
-    }, {
-      "_id": "66756c0002343247cdbc165dd2c0b2",
-      "user": "66745162c7d1cc400687f8a3",
-      "title": "My Second Note become first",
-      "description": "More Testing....",
-      "tag": "MYSecondNOTETOFIrst",
-      "date": "2024-06-21T12:03:12.609Z",
-      "__v": 0
-    }, 
-    {
-      "_id": "66756c0007cdbc2342165dd2c0b2",
-      "user": "66745162c7d1cc400687f8a3",
-      "title": "My Second Note become first",
-      "description": "More Testing....",
-      "tag": "MYSecondNOTETOFIrst",
-      "date": "2024-06-21T12:03:12.609Z",
-      "__v": 0
-    }
-  ]
+  const [notes, setNotes] = useState([]);
 
-  const [notes,setNotes] = useState(intialNotes);
+  const fetchAllNotes = async () => {
+    const response = await fetch(`${host}/api/notes/fetchallnotes`, {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      headers: {
+        "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzQ1MTYyYzdkMWNjNDAwNjg3ZjhhMyIsImlhdCI6MTcxOTEzMjc3NCwiZXhwIjoxNzE5MTM2Mzc0fQ.MgpvOE_u2JXTuFcspn3t5QX_gtILid-4As0PhJEv_WM"
+      }
+    });
+    const res = await response.json();
+    setNotes(res);
+  }
 
   //Add a note
-  const addNote = (note)=>{
+  const addNote = async (note) => {
+    const { title, description, tag } = note;
+    const response = await fetch(`${host}/api/notes/addnote`, {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+        "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzQ1MTYyYzdkMWNjNDAwNjg3ZjhhMyIsImlhdCI6MTcxOTEzMjc3NCwiZXhwIjoxNzE5MTM2Mzc0fQ.MgpvOE_u2JXTuFcspn3t5QX_gtILid-4As0PhJEv_WM"
+      },
+      body: JSON.stringify({title,description,tag}), // body data type must match "Content-Type" header
+    });
+    const res = await response.json(); // parses JSON response into native JavaScript objects
     //concat don't modify original and dont use push to update notes array as state should be modified only be setNotes
-    setNotes(notes.concat(note));
+    if(response.ok) setNotes(notes.concat(note));
+    else console.log(res);
+
   }
   //Delete a note
-  const deleteNote = (id)=> {
-    let newNotes = notes.filter((e)=>e._id !== id);
+  const deleteNote = (id) => {
+    let newNotes = notes.filter((e) => e._id !== id);
     setNotes(newNotes);
   }
   return (
     <>
-      <noteContext.Provider value={{notes,addNote,deleteNote}}>
+      <noteContext.Provider value={{ notes, addNote, deleteNote, fetchAllNotes }}>
         {props.children}
       </noteContext.Provider>
     </>
