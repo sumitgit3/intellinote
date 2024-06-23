@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import noteContext from './noteContext'
 const NoteState = (props) => {
+
   let intialNotes = [
     {
       "_id": "66756c0007cdbc165dd2c0b2",
@@ -69,10 +70,17 @@ const NoteState = (props) => {
       "__v": 0
     }
   ]
-  const [notes, setNotes] = useState(intialNotes);
+
+  const [notes,setNotes] = useState(intialNotes);
+
+  //Add a note
+  const addNote = (note)=>{
+    //concat don't modify original and dont use push to update notes array as state should be modified only be setNotes
+    setNotes(notes.concat(note));
+  }
   return (
     <>
-      <noteContext.Provider value={[notes, setNotes]}>
+      <noteContext.Provider value={{notes,addNote}}>
         {props.children}
       </noteContext.Provider>
     </>
