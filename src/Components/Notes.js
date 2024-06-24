@@ -16,12 +16,10 @@ const Notes = () => {
   const ref = useRef(null);
   const updateNote = (currentNote) => {
     ref.current.click();
-    setEditedNote(currentNote);
+    setEditedNote(currentNote);  //This line set the state of editedNote when edit button is clicked and set all needed state of editedNote including id
   }
-  //give a reference to modal
-  const modalRef = useRef(null);
-  //state to handle update form
-  const [editedNote, setEditedNote] = useState({ title: "", description: "", tag: "" });
+  //state to handle update form -> but only gets the title,description,tag -> id comes from when update node get executed from noteItem
+  const [editedNote, setEditedNote] = useState({ title: "", description: "", tag: "" }); 
   //onchange function to handle change in form and update it
   const onChange = (e) => {
     //... spread operator so other properties remain intact
@@ -30,11 +28,6 @@ const Notes = () => {
   const handleEdit = (e) => {
     e.preventDefault();
     editNote(editedNote);
-    //hide modal after save
-    if (modalRef.current) {
-      const modal = window.bootstrap.Modal.getInstance(modalRef.current);
-      modal.hide();
-    }
   }
 
   return (
@@ -46,7 +39,7 @@ const Notes = () => {
       </button>
 
       {/* Modal */}
-      <div ref={modalRef} className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div  className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
@@ -57,11 +50,11 @@ const Notes = () => {
               <form>
                 <div className="mb-3">
                   <label htmlFor="title" className="form-label">Title</label>
-                  <input type="text" className="form-control" name='title' id="title" aria-describedby="Title" onChange={onChange} value={editedNote.title}/>
+                  <input type="text" className="form-control" name='title' id="title" aria-describedby="Title" onChange={onChange} value={editedNote.title} minLength={3} />
                 </div>
                 <div className="mb-3">
                   <label htmlFor="description" className="form-label">Description</label>
-                  <input type="text" className="form-control" name='description' id="description" onChange={onChange} value={editedNote.description}/>
+                  <input type="text" className="form-control" name='description' id="description" onChange={onChange} value={editedNote.description} minLength={5}/>
                 </div>
                 <div className="mb-3">
                   <label htmlFor="tag" className="form-label">Tag</label>
@@ -70,13 +63,17 @@ const Notes = () => {
               </form>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-primary" onClick={handleEdit}>Save</button>
+              <button disabled={editedNote.title.length <=2 || editedNote.description.length <=4} type="button" className="btn btn-primary" data-bs-dismiss='modal' onClick={handleEdit}>Save</button>
             </div>
           </div>
         </div>
       </div>
       <div className="row my-3">
         <h1>Your Notes</h1>
+        <div className="container text-info mx-1">
+          {notes.length === 0 && "No Notes created" }
+        </div>
+        
         {notes.map((currentNote, index) => {
           return <NoteItem key={index} note={currentNote} updateNote={updateNote} />
         })}
