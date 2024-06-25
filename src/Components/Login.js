@@ -38,7 +38,7 @@ const Login = () => {
 
     }
     return (
-        <>
+        <div className='container-fluid'>
             <form>
                 <div className="mb-3 mt-3">
                     <label htmlFor="email" className="form-label">Email address</label>
@@ -48,9 +48,9 @@ const Login = () => {
                     <label htmlFor="password" className="form-label">Password</label>
                     <input type="password" className="form-control" id="Password" name="password" onChange={onChange} value={credentials.password} autoComplete="current-password" />
                 </div>
-                <button type="submit" className="btn btn-primary" onClick={handleLogin}>Submit</button>
+                <button type="submit" className="btn btn-primary" onClick={handleLogin}>Login</button>
             </form>
-        </>
+        </div>
     )
 }
 
