@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-
+import { useNavigate } from 'react-router-dom';
 const Login = () => {
+    let navigate = useNavigate();
     const [credentials, setCredentials] = useState({ email: "", password: "" });
     const onChange = (e) => {
         //... spread operator so other properties remain intact
@@ -9,7 +10,7 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`http://localhost:5000/api/auth/login`, {
+            const response = await fetch('http://localhost:5000/api/auth/login', {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 mode: "cors", // no-cors, *cors, same-origin
                 headers: {
@@ -18,13 +19,16 @@ const Login = () => {
                 },
                 body: JSON.stringify({ email: credentials.email, password: credentials.password }), // body data type must match "Content-Type" header
             });
-            const Login_Response = await response.json(); // parses JSON response into native JavaScript objects-> 
             if (response.ok) {
+                const Login_Response = await response.json(); // parses JSON response into native JavaScript objects-> 
                 localStorage.setItem("authToken", Login_Response.authToken);
                 console.log({ success: "Auth token recieved" });
+                navigate("/");
             }
             else {
-                console.log(Login_Response);
+                const errorMessage = await response.text();//response is not json
+                console.log(errorMessage);
+                alert("Login Failed: " + errorMessage);
             }
         } catch (error) {
             console.log(error);
