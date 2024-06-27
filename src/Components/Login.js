@@ -24,7 +24,6 @@ const Login = () => {
             if (response.ok) {
                 const Login_Response = await response.json(); // parses JSON response into native JavaScript objects-> 
                 localStorage.setItem("authToken", Login_Response.authToken);
-                console.log({ success: "Auth token recieved" });
                 navigate("/");
                 showAlert("Logged in successfully","success");
             }

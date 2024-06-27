@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import noteContext from './noteContext'
-
+import alertContext from '../Alert/alertContext';
 const NoteState = (props) => {
+  const { showAlert } = useContext(alertContext);
   const host = "http://localhost:5000";
-
   const [notes, setNotes] = useState([]);
 
   const fetchAllNotes = async () => {
@@ -37,54 +37,77 @@ const NoteState = (props) => {
         },
         body: JSON.stringify({ title, description, tag }), // body data type must match "Content-Type" header
       });
-      const noteInResponse = await response.json(); // parses JSON response into native JavaScript objects-> to get the new added note with id
-      //concat don't modify original and dont use push to update notes array as state should be modified only be setNotes
-      if (response.ok) setNotes(notes.concat(noteInResponse));
-      else console.log(noteInResponse);
+      if (response.ok) {
+        const noteInResponse = await response.json(); // parses JSON response into native JavaScript objects-> to get the new added note with id
+        //concat don't modify original and dont use push to update notes array as state should be modified only be setNotes
+        setNotes(notes.concat(noteInResponse));
+        showAlert("Note added", "success");
+      }
+      else {
+        showAlert(response.text(), "warning");
+      }
 
     } catch (error) {
       console.log(error);
+      showAlert("Error", "danger");
     }
 
   }
   //Delete a note
   const deleteNote = async (id) => {
-    const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
-      method: "DELETE", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      headers: {
-        "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzQ1MTYyYzdkMWNjNDAwNjg3ZjhhMyIsImlhdCI6MTcxOTIzODE0MH0.NMo9Ai3UsAkAHSV1COz1ATLQxHPjy8zb3-TDgaom7Tk"
+    try {
+      const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
+        method: "DELETE", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        headers: {
+          "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzQ1MTYyYzdkMWNjNDAwNjg3ZjhhMyIsImlhdCI6MTcxOTIzODE0MH0.NMo9Ai3UsAkAHSV1COz1ATLQxHPjy8zb3-TDgaom7Tk"
+        }
+      });
+      if (response.ok) {
+        let newNotes = notes.filter((e) => e._id !== id);
+        setNotes(newNotes);
+        showAlert("Note Deleted successfully", "success");
       }
-    });
-    const res = await response.json();
-    console.log(res);
-    if (response.ok) {
-      let newNotes = notes.filter((e) => e._id !== id);
-      setNotes(newNotes);
+      else {
+        showAlert("Deletion Failed: " + response.text(), "warning");
+      }
     }
+    catch (error) {
+      console.log(error);
+      showAlert("Error", "danger");
+    }
+
   }
   //edit a note
   const editNote = async (editedNote) => {
-    const { title, description, tag, _id } = editedNote;
-    const response = await fetch(`${host}/api/notes/updatenote/${_id}`, {
-      method: "PUT", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-        "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzQ1MTYyYzdkMWNjNDAwNjg3ZjhhMyIsImlhdCI6MTcxOTIzODE0MH0.NMo9Ai3UsAkAHSV1COz1ATLQxHPjy8zb3-TDgaom7Tk"
-      },
-      body: JSON.stringify({ title, description, tag }), // body data type must match "Content-Type" header
-    });
-    const updatedNoteInResponse = await response.json(); // parses JSON response into native JavaScript objects
-    if (response.ok) {
-      const newNotes = notes.filter((e) => e._id !== updatedNoteInResponse._id);
-      setNotes(newNotes.concat(updatedNoteInResponse));
-      
+    try {
+      const { title, description, tag, _id } = editedNote;
+      const response = await fetch(`${host}/api/notes/updatenote/${_id}`, {
+        method: "PUT", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        headers: {
+          "Content-Type": "application/json",
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+          "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzQ1MTYyYzdkMWNjNDAwNjg3ZjhhMyIsImlhdCI6MTcxOTIzODE0MH0.NMo9Ai3UsAkAHSV1COz1ATLQxHPjy8zb3-TDgaom7Tk"
+        },
+        body: JSON.stringify({ title, description, tag }), // body data type must match "Content-Type" header
+      });
+      if (response.ok) {
+        const updatedNoteInResponse = await response.json(); // parses JSON response into native JavaScript objects
+        const newNotes = notes.filter((e) => e._id !== updatedNoteInResponse._id);
+        setNotes(newNotes.concat(updatedNoteInResponse));
+        showAlert("Note Updated Successfully","success");
+      }
+      else {
+        showAlert("Updation Failed","warning");
+      }
+    } 
+    catch (error) {
+      console.log(error);
+      showAlert("Error", "danger");
     }
-    else console.log(updatedNoteInResponse);
-
   }
+
   return (
     <>
       <noteContext.Provider value={{ notes, addNote, deleteNote, fetchAllNotes, editNote }}>
