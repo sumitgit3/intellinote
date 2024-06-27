@@ -1,9 +1,20 @@
+import { useNavigate } from "react-router-dom"
 import Notes from "./Notes"
+import { useEffect } from "react";
+
 
 const Home = () => {
+  let navigate = useNavigate();
+  useEffect(() => {
+    if (!localStorage.getItem('authToken')) {
+      navigate('/login');
+    }
+  }, [navigate]); 
   return (
     <>
-      <Notes />
+      {localStorage.getItem('authToken')?<Notes />:
+        "403 Error"
+      }
     </>
   )
 }
