@@ -24,8 +24,8 @@ const Login = () => {
             if (response.ok) {
                 const Login_Response = await response.json(); // parses JSON response into native JavaScript objects-> 
                 localStorage.setItem("authToken", Login_Response.authToken);
-                navigate("/");
                 showAlert("Logged in successfully","success");
+                navigate("/");
             }
             else {
                 const errorMessage = await response.text();//response is not json
@@ -40,6 +40,7 @@ const Login = () => {
     }
     return (
         <div className='container-fluid'>
+            <h2>Login to continue to intelliNote</h2>
             <form>
                 <div className="mb-3 mt-3">
                     <label htmlFor="email" className="form-label">Email address</label>

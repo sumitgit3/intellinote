@@ -12,7 +12,7 @@ const NoteState = (props) => {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         headers: {
-          "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzQ1MTYyYzdkMWNjNDAwNjg3ZjhhMyIsImlhdCI6MTcxOTIzODE0MH0.NMo9Ai3UsAkAHSV1COz1ATLQxHPjy8zb3-TDgaom7Tk"
+          "auth-token": localStorage.getItem('authToken')
         }
       });
       const res = await response.json();
@@ -33,7 +33,7 @@ const NoteState = (props) => {
         headers: {
           "Content-Type": "application/json",
           // 'Content-Type': 'application/x-www-form-urlencoded',
-          "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzQ1MTYyYzdkMWNjNDAwNjg3ZjhhMyIsImlhdCI6MTcxOTIzODE0MH0.NMo9Ai3UsAkAHSV1COz1ATLQxHPjy8zb3-TDgaom7Tk"
+          "auth-token": localStorage.getItem('authToken')
         },
         body: JSON.stringify({ title, description, tag }), // body data type must match "Content-Type" header
       });
@@ -60,7 +60,7 @@ const NoteState = (props) => {
         method: "DELETE", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         headers: {
-          "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzQ1MTYyYzdkMWNjNDAwNjg3ZjhhMyIsImlhdCI6MTcxOTIzODE0MH0.NMo9Ai3UsAkAHSV1COz1ATLQxHPjy8zb3-TDgaom7Tk"
+          "auth-token": localStorage.getItem('authToken')
         }
       });
       if (response.ok) {
@@ -88,7 +88,7 @@ const NoteState = (props) => {
         headers: {
           "Content-Type": "application/json",
           // 'Content-Type': 'application/x-www-form-urlencoded',
-          "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzQ1MTYyYzdkMWNjNDAwNjg3ZjhhMyIsImlhdCI6MTcxOTIzODE0MH0.NMo9Ai3UsAkAHSV1COz1ATLQxHPjy8zb3-TDgaom7Tk"
+          "auth-token": localStorage.getItem('authToken')
         },
         body: JSON.stringify({ title, description, tag }), // body data type must match "Content-Type" header
       });
