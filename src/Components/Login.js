@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import alertContext from '../Context/Alert/alertContext';
 const Login = () => {
+    const {showAlert} = useContext(alertContext);
     let navigate = useNavigate();
     const [credentials, setCredentials] = useState({ email: "", password: "" });
     const onChange = (e) => {
@@ -24,15 +26,15 @@ const Login = () => {
                 localStorage.setItem("authToken", Login_Response.authToken);
                 console.log({ success: "Auth token recieved" });
                 navigate("/");
+                showAlert("Logged in successfully","success");
             }
             else {
                 const errorMessage = await response.text();//response is not json
-                console.log(errorMessage);
-                alert("Login Failed: " + errorMessage);
+                showAlert("Login Failed: " + errorMessage,"warning");
             }
         } catch (error) {
             console.log(error);
-            // alert("Server Unreachable");
+            showAlert("Error","danger");
         }
 
 

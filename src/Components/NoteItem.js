@@ -1,7 +1,9 @@
 import React, { useContext } from 'react'
 import noteContext from '../Context/Notes/noteContext';
+import alertContext from '../Context/Alert/alertContext';
 const NoteItem = (props) => {
     const {deleteNote} = useContext(noteContext);
+    const {showAlert} = useContext(alertContext);
     const { note,updateNote } = props;
     return (
         <>
@@ -13,7 +15,7 @@ const NoteItem = (props) => {
                     </div>
                     <div className="container my-3">
                     <i className="fa-solid fa-pen-to-square fa-xl mx-2" title='edit' onClick={()=>{updateNote(note)}}></i>
-                    <i className="fa-solid fa-trash fa-xl mx-2" title='delete' onClick={()=>{deleteNote(note._id)}}></i>
+                    <i className="fa-solid fa-trash fa-xl mx-2" title='delete' onClick={()=>{deleteNote(note._id);showAlert("Note Deleted","success")}}></i>
                     </div>
                 </div>
             </div>

@@ -2,7 +2,9 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import noteContext from '../Context/Notes/noteContext'
 import NoteItem from './NoteItem';
 import AddNote from './AddNote';
+import alertContext from '../Context/Alert/alertContext';
 const Notes = () => {
+  const {showAlert} = useContext(alertContext);
   const { notes, fetchAllNotes, editNote } = useContext(noteContext);
   //fetch notes on first rendering
   useEffect(() => {
@@ -28,6 +30,7 @@ const Notes = () => {
   const handleEdit = (e) => {
     e.preventDefault();
     editNote(editedNote);
+    showAlert("Note updated","success");
   }
 
   return (
